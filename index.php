@@ -196,7 +196,7 @@ if($flag == 1) {
 require_once "ShoppingCart.php";
 $phn = "2";
 $member_id = $phn; // you can your integerate authentication module here to get logged in member
-$shoppingCart = new ShoppingCart();
+$shoppingCart = new shoppingcart();
 if (! empty($_GET["action"])) {
     switch ($_GET["action"]) {
         case "add":
