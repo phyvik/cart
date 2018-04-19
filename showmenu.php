@@ -1,5 +1,5 @@
 <?php
-	require_once "ShoppingCart.php";
+	require_once "shoppingcart.php";
 	$shoppingCart = new ShoppingCart();
 ?>
 <script
