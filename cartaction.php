@@ -1,16 +1,13 @@
- 
+  
 <?php
 	require_once "shoppingcart.php";
 	$shoppingCart = new shoppingcart();
- 
+	?>
 
+<?php
 if(isset($_REQUEST['action']) == "add"){
-	$mycartlist = "";
-    
-    $myMenu  = $shoppingCart->getmeals($_REQUEST['mealid']);
-    
-    print_r($myMenu['mealorigin']);
-    
+	$mycartlist = ""; 
+    $myMenu  = $shoppingCart->getmeals($_REQUEST['mealid']); 
     //$orderid = $_REQUEST['phone']_time();
     $subtotalprice = $myMenu['price'] * $_REQUEST['quantity'];
     $jsondata = "";
@@ -26,48 +23,47 @@ if(isset($_REQUEST['action']) == "add"){
     
     $i = 0;
     $total = 0;
-    foreach($mycartlist as $key => $val){
-        
-        $res = "<tr>
+	 echo $str = '
+    <div id = "book" class = "container-fluid" style = "text-align:center; background-color:#f5efd5">
+		<div class="text-center text-uppercase u-heading-v6-2 g-pt-30">
+			<h2 class="h3 u-heading-v6__title g-font-size-20"> Cart </h2>
+		</div>
+	</div>
+	<div class="container">
+	<div class="row" id="cart_viewer">
+		 
+	<table class="table table-hover">
+			  <tbody>
+	'; 
+    foreach($mycartlist as $key => $val){ 
+        echo "<tr>
                     <th scope='row'>".$i."</th>
                         <td>".$val['mealorigin']."</td>
+                        <td>".$val['quantity']."</td>
                         <td>".$val['subtotal']."</td>
-                        <td>".$val['id']."</td>
+                        <td>
+						<div class='btn btn-primary' onclick='return delete_mealitem(\'".$val['id']."\'); > 
+							Delete 
+						</div>
+						</td>
                 </tr>" ;
         $total = $total + $val['subtotal'];
         $i++;
     } 
-    echo $str = '
-    <div id = "book" class = "container-fluid" style = "text-align:center; background-color:#f5efd5">
-		<div class="text-center text-uppercase u-heading-v6-2 g-pt-30">
-			<h2 class="h3 u-heading-v6__title g-font-size-20"> Cart </h2>
-		</div>	
-        
-	    <table class="table table-hover">
-          <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">First</th>
-              <th scope="col">Last</th>
-              <th scope="col">Handle</th>
-              <th scope="col">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-                '.$res.'
-                <tr>
-                    <th scope="row"></th>
-                        <td></td>
-                        <td></td>
-                        <td>'.$total.'</td>
+    echo " 
+		<tr>
+                    <th scope='row'></th>
+                        <td> </td> 
+                        <td> Total : ".$total."</td>
+                        <td><div class='btn btn-primary' onclick='return placeorder(".$_REQUEST['phone'].")'> Place Order  </div></td>
+						<td> </td>
                 </tr>
-                
-                
-          </tbody>
-        </table>
-        </div> 
-        ';
-    echo $str;    
+	</tbody>
+		</table>
+		
+		</div></div>
+		";
+    
 	return true;
 	die();
 }

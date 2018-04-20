@@ -51,6 +51,14 @@
         addcart(id);
     }
 	
+	function placeorder(phn){
+		alert(phn);
+	}
+	
+	function delete_mealitem(cartid){
+		alert(cartid);
+	}
+	
 </script>
 <div class="container">
 <div class="row">     
@@ -91,10 +99,59 @@
 </div>	
 
 <div class='container'>
-<div class='row' id='cart_viewer'>
-    
-    
-    
-    
+	<div class='row' id='cart_viewer'>
+		 
+		<?php 
+			$res_cart = $shoppingCart->get_mealscartlist($_REQUEST['phone']);
+		 	if( count($res_cart) > 0 ){
+		?>
+		<div id = "book" class = "container-fluid" style = "text-align:center; background-color:#f5efd5">
+			<div class="text-center text-uppercase u-heading-v6-2 g-pt-30">
+				<h2 class="h3 u-heading-v6__title g-font-size-20"> Cart </h2>
+			</div>	
+		</div>
+			<table class="table table-hover">
+			  <tbody>
+				  <?php 
+				  $i = 1;
+				  $total = 0;
+				  foreach($res_cart as $k => $val ){
+					  if($val['quantity'] > 0) {
+					  echo "<tr><th>".$i."</th>
+							<td colspan='2'>".$val['mealorigin']."</td>
+							<td colspan='2'>".$val['subtotal']."</td> 
+							<td><div class='btn btn-primary' onclick='return delete_mealitem(\'".$val['id']." \'); > Delete </div></td></tr>
+							";
+					    $total = $total + $val['subtotal'];
+						$i++;
+					  }//end If					  
+				  }
+				  
+				   echo " 
+		<tr>
+                    <th scope='row'></th>
+                        <td> </td>
+                        <td> </td>
+                        <td> Total : ".$total."</td>
+                        <td><div class='btn btn-primary' onclick='return placeorder(".$_REQUEST['phone'].")'> Place Order  </div></td>
+                </tr>
+	</tbody>
+		</table>"; 
+		 	
+			}else{ 
+			
+			echo '
+			<div id = "book" class = "container-fluid" style = "text-align:center; background-color:#f5efd5">
+			<div class="text-center text-uppercase u-heading-v6-2 g-pt-30">
+				<h2 class="h3 u-heading-v6__title g-font-size-20"> Empty Cart </h2>
+			</div>	
+		</div>';
+		
+			} 
+		?>
+		 
+	</div>
 </div>
-</div>
+
+
+<div style='padding:10px'></div>

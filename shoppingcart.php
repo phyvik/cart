@@ -1,5 +1,6 @@
 <?php
 require_once "/home/ubuntu/webhook/includes/DBController.php";
+//require_once 'DBController.php';
 
 class ShoppingCart extends DBController
 {
@@ -36,7 +37,7 @@ class ShoppingCart extends DBController
     */
     function insertmeals_to_cart($mealid, $quantity, $mealorigin, $mealsdata, $price, $subtotalprice, $phone, $jsondata ){
         
-         echo $query = "INSERT INTO `goodmeals`.`meals_cart`
+          $query = "INSERT INTO `goodmeals`.`meals_cart`
                         (`meal_id`, `quantity`, `mealorigin`, `mealdata`, `price`, `subtotal`, `phone`, json_data) 
                     VALUES 
                         ('".$mealid."', '".$quantity."','".$mealorigin."','".$mealsdata."','".$price."','".$subtotalprice."','".$phone."','".$jsondata."')"; 
@@ -47,7 +48,7 @@ class ShoppingCart extends DBController
     
     function updatemeals_to_cart($mealid, $quantity, $subtotalprice, $phone, $jsondata ){
         
-         echo $query = "update `goodmeals`.`meals_cart` set `quantity` = ? , `subtotal` = ? where meal_id='".$mealid."' and phone='".$phone."' and order_flag='0' "; 
+          $query = "update `goodmeals`.`meals_cart` set `quantity` = ? , `subtotal` = ? where meal_id='".$mealid."' and phone='".$phone."' and order_flag='0' "; 
                    
          $params = array(
             array(
