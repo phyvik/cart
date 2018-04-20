@@ -9,7 +9,7 @@ class DBController
 
     private $password = "";
 
-    private $database = "test";
+    private $database = "goodmeals";
 
     private static $conn;
 
