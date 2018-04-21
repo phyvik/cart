@@ -215,7 +215,63 @@ class ShoppingCart extends DBController
         );        
         $this->updateDB($query, $params);
     }
-
+	
+	function placed_order_update($phn){
+		
+		$query = "UPDATE `goodmeals`.`meals_cart` 
+						SET 
+						`order_flag`='1' 
+						WHERE 
+						`phone`=? ";
+		
+		$params = array(
+            array(
+                "param_type" => "i",
+                "param_value" => $phn
+            )
+        ); 
+		$this->updateDB($query, $params);
+	}
+	
+	function place_order($phn, $total){
+		
+		$orderdata = $this->get_mealscartlist($phn); 
+		$cartlist = $this->getcartlist($phn);
+		$this->insert_orderdetails($orderdata, $cartlist, $total, $phn);
+		$this->placed_order_update($phn);
+		return "Success"; 
+		
+	}
+	function getcartlist($customer_phn){
+		$query = "SELECT GROUP_CONCAT(id) as 'idlist' FROM  meals_cart WHERE phone = ? and order_flag= 0 AND date_time > CURRENT_DATE ";
+		$params = array(
+            array(
+                "param_type" => "i",
+                "param_value" => $customer_phn
+            ) 
+        ); 
+        $cartResult = $this->getDBResult($query, $params);
+        return $cartResult[0];
+	}
+	
+    function insert_orderdetails($orderdata, $cartlist, $total, $phn){
+		$jsondata = stripcslashes(json_encode($orderdata));
+		$query = "INSERT INTO `goodmeals`.`ordermeals` 			
+					(`cartlist`,
+					 `phone`,
+					 `json_data`,
+					 `orderstatus`,
+					 `orderid`) 
+				   VALUES ('".$cartlist['idlist']."',
+						   '".$phn."',
+						   '".$jsondata."',
+						   'PlACED',
+						   '')
+				";  
+        $this->updateDB($query);
+		
+	}
+	
     function emptyCart($customer_phn)
     {
         $query = "DELETE FROM tbl_cart WHERE customer_phn = ?";

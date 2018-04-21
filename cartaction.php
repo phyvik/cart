@@ -56,7 +56,7 @@ if($_REQUEST['action'] == "add"){
 			<th scope='row'></th>
 				<td> </td> 
 				<td style='color:#000; font-weight:bold; font-size:20px;'> Total : ".$total."</td>
-				<td><div class='btn btn-primary' onclick='return placeorder(".$_REQUEST['phone'].")'> Place Order  </div></td>
+				<td><div class='btn btn-primary' onclick='return placeorder(".$_REQUEST['phone'].", ".$total.")'> Place Order  </div></td>
 				<td> </td>
 		</tr>
 	</tbody>
@@ -137,7 +137,7 @@ if($_REQUEST['action'] == "del"){
 			<th scope='row'></th>
 				<td> </td> 
 				<td style='color:red; font-weight:bold; font-size:20px;'> Total : ".$total."</td>
-				<td><div class='btn btn-primary' onclick='return placeorder(".$_REQUEST['phone'].")'> Place Order  </div></td>
+				<td><div class='btn btn-primary' onclick='return placeorder(".$_REQUEST['phone'].", ".$total." )'> Place Order  </div></td>
 				<td> </td>
 		</tr>
 	</tbody>
@@ -202,7 +202,7 @@ if($_REQUEST['action'] == "cartdelrow"){
 			<th scope='row'></th>
 				<td> </td> 
 				<td style='color:red; font-weight:bold; font-size:20px;'> Total : ".$total."</td>
-				<td><div class='btn btn-primary' onclick='return placeorder(".$_REQUEST['phone'].")'> Place Order  </div></td>
+				<td><div class='btn btn-primary' onclick='return placeorder(".$_REQUEST['phone']." , ".$total.")'> Place Order  </div></td>
 				<td> </td>
 		</tr>";
 		
@@ -223,5 +223,21 @@ if($_REQUEST['action'] == "cartdelrow"){
 	die();
 }
 
+
+
+if($_REQUEST['action'] == "placeorder"){
+	
+	$orderid  = $shoppingCart->place_order($_REQUEST['phone'], $_REQUEST['total']);
+	echo '
+			<div id = "book" class = "container-fluid" style = "text-align:center; background-color:#f5efd5">
+			<div class="text-center text-uppercase u-heading-v6-2 g-pt-30">
+				<h2 class="h3 u-heading-v6__title g-font-size-20"> Your Order placed with OrderID : '.$orderid.' </h2>
+			</div>	
+		</div>';
+	
+	return true;
+	die();
+	
+}
 
 ?>
