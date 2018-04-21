@@ -20,10 +20,12 @@
 			var preval = parseInt(nxtval) - 1;
 			document.getElementById(idval).value = preval;
             delcart(id);
+		 }else{
+			 delcart(id);
 		 }
 	}
 	
-	function addcart(k) { 
+	function addcart(k) {
         
 		var quantity = document.getElementById("cartval_"+k).value;
         var txt = document.getElementById("mealid_"+k).value;
@@ -34,20 +36,27 @@
 	}
     
     
-	function delcart(k) { 
+	function delcart(k) {  
+	
 		var quantity = document.getElementById("cartval_"+k).value;
-		var txt = document.getElementById("mealid_"+k).value;
+		if(quantity == 0){
+			document.getElementById("selectbtn_"+k).style.display = "block";
+			document.getElementById("menucart_"+k).style.display = "none";
+			document.getElementById("cartval_"+k).value = 1;
+		}
+		var txt = document.getElementById("mealid_"+k).value;		
         $.post("cartaction.php", {action:'del',mealid:txt, quantity:quantity,phone:<?php echo $_REQUEST['phone']; ?>}, function(result){
 			 document.getElementById('cart_viewer').innerHTML = result;
-		});
+		}); 
+		
 		return false;
 	}
     
     
-    function showplusminus(id){
-        
+    function showplusminus(id){ 
+		 
         document.getElementById("selectbtn_"+id).style.display = "none";
-        document.getElementById("menucart_"+id).style.display = "inline";
+        document.getElementById("menucart_"+id).style.display = "block";
         addcart(id);
     }
 	
@@ -55,8 +64,16 @@
 		alert(phn);
 	}
 	
-	function delete_mealitem(cartid){
-		alert(cartid);
+	function delete_mealitem(cartid, phn, k){
+		
+		document.getElementById("selectbtn_"+k).style.display = "block";
+		document.getElementById("menucart_"+k).style.display = "none";
+		document.getElementById("cartval_"+k).value = 1;
+		
+		$.post("cartaction.php", {action:'cartdelrow', cartid:cartid, phone:phn}, function(result){ 
+			 document.getElementById('cart_viewer').innerHTML = result;
+		});
+		return false;
 	}
 	
 </script>
@@ -66,9 +83,10 @@
     $query = "SELECT * FROM meals";
     $product_array = $shoppingCart->getAllProduct($query);
     if (! empty($product_array)) {
-		$i=0;
+		 
         foreach ($product_array as $key => $value) 
 		{
+			$i = $product_array[$key]["id"];
     ?>
  	  
 	<div class="col-md-3 g-py-20" style='text-align:center;'>
@@ -78,7 +96,7 @@
 			<h4 class="text-uppercase g-line-height-1_2 g-font-size-14" style="text-align: center;"><?php echo $product_array[$key]["mealorigin"].' : &#x20B9; '.$product_array[$key]["price"]	 ;?>  
 			</h4> 
 		<form method="post" name='mealscart'>
-            <div class='btn btn-primary' id='selectbtn_<?php echo $i; ?>' onclick='showplusminus(<?php echo $i; ?>);' > Select </div>
+            <div class='btn btn-primary' style='display:block;' id='selectbtn_<?php echo $i; ?>' onclick='showplusminus(<?php echo $i; ?>);' > Select </div>
 			<div id='menucart_<?php echo $i; ?>' style='display:none;'>
                 <div class='btn btn-success' onclick="decrement_quantity('cartval_<?php echo $i; ?>' , '<?php echo $i; ?>' )" > - </div>
             
@@ -91,7 +109,7 @@
 	</div> 
 	
 	<?php
-		$i++;
+		 
 		}
 	}//End If 
 	?>
@@ -117,11 +135,12 @@
 				  $total = 0;
 				  foreach($res_cart as $k => $val ){
 					  if($val['quantity'] > 0) {
-					  echo "<tr><th>".$i."</th>
-							<td colspan='2'>".$val['mealorigin']."</td>
-							<td colspan='2'>".$val['subtotal']."</td> 
-							<td><div class='btn btn-primary' onclick='return delete_mealitem(\'".$val['id']." \'); > Delete </div></td></tr>
-							";
+					  echo '<tr><th>'.$i.'</th>
+							<td colspan="2">'.$val['mealorigin'].'</td>
+							<td colspan="2">'.$val['subtotal'].'</td> 
+							<td><div class="btn btn-primary" 
+									 onclick="return delete_mealitem('.$val['id'].');" > Delete </div></td></tr>
+							';
 					    $total = $total + $val['subtotal'];
 						$i++;
 					  }//end If					  
