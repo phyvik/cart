@@ -237,9 +237,10 @@ class ShoppingCart extends DBController
 		
 		$orderdata = $this->get_mealscartlist($phn); 
 		$cartlist = $this->getcartlist($phn);
-		$this->insert_orderdetails($orderdata, $cartlist, $total, $phn);
+		$orderid = $phn."_".time();
+		$this->insert_orderdetails($orderdata, $cartlist, $total, $phn, $orderid);
 		$this->placed_order_update($phn);
-		return "Success"; 
+		return $orderid; 
 		
 	}
 	function getcartlist($customer_phn){
@@ -254,7 +255,7 @@ class ShoppingCart extends DBController
         return $cartResult[0];
 	}
 	
-    function insert_orderdetails($orderdata, $cartlist, $total, $phn){
+    function insert_orderdetails($orderdata, $cartlist, $total, $phn, $orderid){
 		$jsondata = stripcslashes(json_encode($orderdata));
 		$query = "INSERT INTO `goodmeals`.`ordermeals` 			
 					(`cartlist`,
@@ -266,7 +267,7 @@ class ShoppingCart extends DBController
 						   '".$phn."',
 						   '".$jsondata."',
 						   'PlACED',
-						   '')
+						   '".$orderid."')
 				";  
         $this->updateDB($query);
 		
